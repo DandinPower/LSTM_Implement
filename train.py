@@ -5,7 +5,7 @@ def Train(model, dataset, answer, num_epochs):
     print('Training...')
     optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2)  
     mse = tf.keras.losses.MeanSquaredError()
-    metrics = tf.keras.metrics.MeanSquaredError()
+    metrics = tf.keras.metrics.Accuracy()
     startTime = time.time()
     total = num_epochs
     for x in range(num_epochs):
