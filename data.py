@@ -35,4 +35,3 @@ if __name__ == "__main__":
     dataset = Dataset(0.9,20)
     print(dataset.GetTrainData()[0].shape)
     print(dataset.GetTrainData()[1].shape)
-    #print(dataset.GetTestData()[0].shape)

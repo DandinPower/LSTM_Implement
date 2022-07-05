@@ -24,7 +24,7 @@ class Stock(tf.keras.Model):
 if __name__ == "__main__":
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
-    #test_data_x, test_data_y = dataset.GetTestData()
     model = Stock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
     Train(model, train_data_x, train_data_y, 100)
+    
     
