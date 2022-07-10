@@ -1,5 +1,7 @@
 import tensorflow as tf 
 import numpy as np 
+from tensorflow.python.framework import ops
+
 @ops.RegisterGradient("BitsQuant")
 def _bits_quant_grad(op, grad):
     inputs = op.inputs[0]
