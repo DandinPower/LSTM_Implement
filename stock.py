@@ -38,15 +38,16 @@ def Normal():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model = Stock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model, train_data_x, train_data_y, 100)
+    Train(model, train_data_x, train_data_y, 50)
 
 def Quant():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model, train_data_x, train_data_y, 100)
+    Train(model, train_data_x, train_data_y, 50)
 
 if __name__ == "__main__":
+    Normal()
     Quant()
     
     
