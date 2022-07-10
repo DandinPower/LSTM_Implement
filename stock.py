@@ -3,6 +3,7 @@ import numpy as np
 from data import Dataset
 from lstm import LSTM, LinearLayer, QuantLSTM, QuantLinearLayer
 from train import Train
+from skrm import SKRM
 SPLIT_RATE = 0.9
 INPUT_DIM = 6 
 HIDDEN_1 = 10
@@ -45,6 +46,14 @@ def Quant():
     train_data_x, train_data_y = dataset.GetTrainData()
     model = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
     Train(model, train_data_x, train_data_y, 50)
+
+def SKRM():
+    skrms = SKRM()
+    dataset = Dataset(SPLIT_RATE,10)
+    train_data_x, train_data_y = dataset.GetTrainData()
+    model = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
+    Train(model, train_data_x, train_data_y, 50)
+
 
 if __name__ == "__main__":
     Normal()
