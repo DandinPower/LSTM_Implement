@@ -37,7 +37,7 @@ class QuantStock(tf.keras.Model):
 
 class SKRMStock(tf.keras.Model):
     def __init__(self, input_dim, hidden_1, hidden_2, skrms):
-        super(QuantStock, self).__init__()
+        super(SKRMStock, self).__init__()
         self.skrms = skrms
         self.lstm = SKRMLSTM(input_dim, hidden_1, skrms)
         self.dense1 = LinearLayer(hidden_1, hidden_2)
