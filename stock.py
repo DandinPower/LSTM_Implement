@@ -53,10 +53,12 @@ def SKRM():
     train_data_x, train_data_y = dataset.GetTrainData()
     model = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
     Train(model, train_data_x, train_data_y, 50)
+    print(skrms.GetCount())
 
 
 if __name__ == "__main__":
-    Normal()
-    Quant()
+    #Normal()
+    #Quant()
+    SKRM()
     
     
