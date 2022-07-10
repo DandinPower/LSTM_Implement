@@ -171,8 +171,8 @@ class SKRMLSTM(tf.keras.Model):
     def call(self, inputs):
         dense_inputs = self.linear(inputs)
         self.skrms.Count(inputs, dense_inputs)
-        for i in range(len(inputs)):
-            for data in inputs[i]:
+        for i in range(len(dense_inputs)):
+            for data in dense_inputs[i]:
                 output = self.cell([data])
             if i == 0:
                 outputs = output
