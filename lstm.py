@@ -205,8 +205,11 @@ class ErrorLinearLayer(tf.keras.layers.Layer):
             shape=[output_dim], initializer=tf.zeros_initializer())
 
     def call(self, inputs):
-        y_pred = self.kernel.random_error(tf.matmul(inputs, self.w), ERROR_RATE, FLIP_START, FLIP_END) + self.kernel.random_error(self.b, ERROR_RATE, FLIP_START, FLIP_END)
-        return self.kernel.random_error(y_pred, ERROR_RATE, FLIP_START, FLIP_END)
+        matmul = tf.matmul(inputs, self.w)
+        bias = matmul + self.b
+        return bias
+        #y_pred = self.kernel.random_error(tf.matmul(inputs, self.w), ERROR_RATE, FLIP_START, FLIP_END) + self.kernel.random_error(self.b, ERROR_RATE, FLIP_START, FLIP_END)
+        #return self.kernel.random_error(y_pred, ERROR_RATE, FLIP_START, FLIP_END)
 
 class ErrorLSTMCell(tf.keras.Model):
     def __init__(self, input_dim):
