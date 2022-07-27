@@ -214,10 +214,10 @@ class ErrorLSTMCell(tf.keras.Model):
         self.kernel = tf.load_op_library('./random_error.so')
         self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
         self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
-        self.Wf = QuantLinearLayer(input_dim * 2, input_dim)
-        self.Wi = QuantLinearLayer(input_dim * 2, input_dim)
-        self.Wc = QuantLinearLayer(input_dim * 2, input_dim)
-        self.Wo = QuantLinearLayer(input_dim * 2, input_dim)
+        self.Wf = ErrorLinearLayer(input_dim * 2, input_dim)
+        self.Wi = ErrorLinearLayer(input_dim * 2, input_dim)
+        self.Wc = ErrorLinearLayer(input_dim * 2, input_dim)
+        self.Wo = ErrorLinearLayer(input_dim * 2, input_dim)
         self.dims = input_dim
 
     def call(self, inputs):
