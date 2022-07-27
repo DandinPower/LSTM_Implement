@@ -2,6 +2,13 @@ import tensorflow as tf
 import numpy as np 
 from tensorflow.python.framework import ops
 from skrm import SKRM
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+ERROR_RATE = float(os.getenv('ERROR_RATE'))
+FLIP_START = int(os.getenv('FLIP_START'))
+FLIP_END = int(os.getenv('FLIP_END'))
 
 @ops.RegisterGradient("BitsQuant")
 def _bits_quant_grad(op, grad):
@@ -9,6 +16,11 @@ def _bits_quant_grad(op, grad):
 
 @ops.RegisterGradient("CountSkrm")
 def _count_skrm_grad(op, grad):
+  return [grad] 
+
+@ops.RegisterGradient("RandomError")
+def _bits_quant_grad(op, grad):
+  inputs = op.inputs[0]
   return [grad] 
 
 class LinearLayer(tf.keras.layers.Layer):
@@ -181,6 +193,59 @@ class SKRMLSTM(tf.keras.Model):
                 current_outputs = outputs
                 outputs = tf.concat((outputs, output),0)
             self.skrms.Count(current_outputs, outputs)
+        return outputs
+
+class ErrorLinearLayer(tf.keras.layers.Layer):
+    def __init__(self, input_dim,output_dim):
+        super().__init__()
+        self.kernel = tf.load_op_library('./random_error.so')
+        self.w = self.add_variable(name='w',
+            shape=[input_dim, output_dim], initializer=tf.zeros_initializer())
+        self.b = self.add_variable(name='b',
+            shape=[output_dim], initializer=tf.zeros_initializer())
+
+    def call(self, inputs):
+        y_pred = self.kernel.random_error(tf.matmul(inputs, self.w), ERROR_RATE, FLIP_START, FLIP_END) + self.kernel.random_error(self.b, ERROR_RATE, FLIP_START, FLIP_END)
+        return self.kernel.random_error(y_pred, ERROR_RATE, FLIP_START, FLIP_END)
+
+class ErrorLSTMCell(tf.keras.Model):
+    def __init__(self, input_dim):
+        super(ErrorLSTMCell, self).__init__()
+        self.kernel = tf.load_op_library('./random_error.so')
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.Wf = QuantLinearLayer(input_dim * 2, input_dim)
+        self.Wi = QuantLinearLayer(input_dim * 2, input_dim)
+        self.Wc = QuantLinearLayer(input_dim * 2, input_dim)
+        self.Wo = QuantLinearLayer(input_dim * 2, input_dim)
+        self.dims = input_dim
+
+    def call(self, inputs):
+        concat = self.kernel.random_error(tf.concat([self.h, inputs],1), ERROR_RATE, FLIP_START, FLIP_END)
+        z = self.kernel.random_error(tf.keras.activations.tanh(self.Wc(concat)), ERROR_RATE, FLIP_START, FLIP_END)
+        zf = self.kernel.random_error(tf.keras.activations.sigmoid(self.Wf(concat)), ERROR_RATE, FLIP_START, FLIP_END)
+        zi = self.kernel.random_error(tf.keras.activations.sigmoid(self.Wi(concat)), ERROR_RATE, FLIP_START, FLIP_END)
+        zo = self.kernel.random_error(tf.keras.activations.sigmoid(self.Wo(concat)), ERROR_RATE, FLIP_START, FLIP_END)
+        memory = self.kernel.random_error(z * zi, ERROR_RATE, FLIP_START, FLIP_END)
+        self.c = self.kernel.random_error(self.kernel.random_error(self.c * zf, ERROR_RATE, FLIP_START, FLIP_END) + memory, ERROR_RATE, FLIP_START, FLIP_END)
+        self.h = self.kernel.random_error(zo * self.kernel.random_error(tf.keras.activations.tanh(self.c), ERROR_RATE, FLIP_START, FLIP_END), ERROR_RATE, FLIP_START, FLIP_END)
+        return self.h
+
+class ErrorLSTM(tf.keras.Model):
+    def __init__(self, input_dim, hidden_dim):
+        super(ErrorLSTM, self).__init__()
+        self.linear = ErrorLinearLayer(input_dim, hidden_dim)
+        self.cell = ErrorLSTMCell(hidden_dim)
+
+    def call(self, inputs):
+        inputs = self.linear(inputs)
+        for i in range(len(inputs)):
+            for data in inputs[i]:
+                output = self.cell([data])
+            if i == 0:
+                outputs = output
+            else:
+                outputs = tf.concat((outputs, output),0)
         return outputs
 
 if __name__ == "__main__":

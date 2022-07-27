@@ -1,6 +1,7 @@
 import tensorflow as tf 
 import time
 import math
+
 def Accuracy(y, y_pred):
     y_total = 0
     y_pred_total = 0
