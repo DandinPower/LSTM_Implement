@@ -101,9 +101,9 @@ def Error():
 
 
 if __name__ == "__main__":
-    #Normal()
+    Normal()
     #Quant()
     #Skrm()
-    Error()
+    #Error()
     
     
