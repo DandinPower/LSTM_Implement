@@ -21,7 +21,6 @@ def Train(model, dataset, answer, num_epochs):
     for x in range(num_epochs):
         with tf.GradientTape() as tape:
             y_pred = model(dataset)
-            print(y_pred)
             loss = mse(answer, y_pred)
             metrics.update_state(answer, y_pred)       
         grads = tape.gradient(loss, model.variables)
