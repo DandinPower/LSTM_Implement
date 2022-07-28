@@ -26,7 +26,6 @@ class Stock(tf.keras.Model):
 
     def call(self, inputs):
         output1 = self.lstm(inputs)
-        print(output1)
         output2 = self.dense1(output1)
         output3 = self.dense2(output2)
         return output3 
@@ -101,9 +100,9 @@ def Error():
 
 
 if __name__ == "__main__":
-    Normal()
+    #Normal()
     #Quant()
     #Skrm()
-    #Error()
+    Error()
     
     

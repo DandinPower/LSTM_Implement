@@ -122,7 +122,6 @@ class SKRMLSTMCell(tf.keras.Model):
         self.c =  last + memory
         tanhc = tf.keras.activations.tanh(self.c)
         self.h = zo * tanhc
-
         self.skrms.Count(inputs, concat)
         self.skrms.Count(concat, z1)
         self.skrms.Count(concat, zf1)
