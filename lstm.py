@@ -27,9 +27,9 @@ class LinearLayer(tf.keras.layers.Layer):
     def __init__(self, input_dim,output_dim):
         super().__init__()
         self.w = self.add_variable(name='w',
-            shape=[input_dim, output_dim], initializer=tf.zeros_initializer())
+            shape=[input_dim, output_dim], initializer="random_normal", trainable = True)
         self.b = self.add_variable(name='b',
-            shape=[output_dim], initializer=tf.zeros_initializer())
+            shape=[output_dim], initializer="random_normal", trainable = True)
 
     def call(self, inputs):
         matmul = tf.matmul(inputs, self.w)
@@ -41,9 +41,9 @@ class QuantLinearLayer(tf.keras.layers.Layer):
         super().__init__()
         self.kernel = tf.load_op_library('./bits_quant.so')
         self.w = self.add_variable(name='w',
-            shape=[input_dim, output_dim], initializer=tf.zeros_initializer())
+            shape=[input_dim, output_dim], initializer="random_normal", trainable = True)
         self.b = self.add_variable(name='b',
-            shape=[output_dim], initializer=tf.zeros_initializer())
+            shape=[output_dim], initializer="random_normal", trainable = True)
 
     def call(self, inputs):
         y_pred = self.kernel.bits_quant(tf.matmul(inputs, self.w)) + self.kernel.bits_quant(self.b)
@@ -52,8 +52,8 @@ class QuantLinearLayer(tf.keras.layers.Layer):
 class LSTMCell(tf.keras.Model):
     def __init__(self, input_dim):
         super(LSTMCell, self).__init__()
-        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
-        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer="random_normal", trainable = True)
         self.Wf = LinearLayer(input_dim * 2, input_dim)
         self.Wi = LinearLayer(input_dim * 2, input_dim)
         self.Wc = LinearLayer(input_dim * 2, input_dim)
@@ -75,8 +75,8 @@ class QuantLSTMCell(tf.keras.Model):
     def __init__(self, input_dim):
         super(QuantLSTMCell, self).__init__()
         self.kernel = tf.load_op_library('./bits_quant.so')
-        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
-        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer="random_normal", trainable = True)
         self.Wf = QuantLinearLayer(input_dim * 2, input_dim)
         self.Wi = QuantLinearLayer(input_dim * 2, input_dim)
         self.Wc = QuantLinearLayer(input_dim * 2, input_dim)
@@ -98,8 +98,8 @@ class SKRMLSTMCell(tf.keras.Model):
     def __init__(self, input_dim, skrms):
         super(SKRMLSTMCell, self).__init__()
         self.skrms = skrms
-        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
-        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer="random_normal", trainable = True)
         self.Wf = LinearLayer(input_dim * 2, input_dim)
         self.Wi = LinearLayer(input_dim * 2, input_dim)
         self.Wc = LinearLayer(input_dim * 2, input_dim)
@@ -200,9 +200,9 @@ class ErrorLinearLayer(tf.keras.layers.Layer):
         super().__init__()
         self.kernel = tf.load_op_library('./random_error.so')
         self.w = self.add_variable(name='w',
-            shape=[input_dim, output_dim], initializer=tf.zeros_initializer())
+            shape=[input_dim, output_dim], initializer="random_normal", trainable = True)
         self.b = self.add_variable(name='b',
-            shape=[output_dim], initializer=tf.zeros_initializer())
+            shape=[output_dim], initializer="random_normal", trainable = True)
 
     def call(self, inputs):
         y_pred = self.kernel.random_error(tf.matmul(inputs, self.w), ERROR_RATE, FLIP_START, FLIP_END) + self.kernel.random_error(self.b, ERROR_RATE, FLIP_START, FLIP_END)
@@ -212,8 +212,8 @@ class ErrorLSTMCell(tf.keras.Model):
     def __init__(self, input_dim):
         super(ErrorLSTMCell, self).__init__()
         self.kernel = tf.load_op_library('./random_error.so')
-        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer=tf.zeros_initializer())
-        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer=tf.zeros_initializer())
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer="random_normal", trainable = True)
         self.Wf = ErrorLinearLayer(input_dim * 2, input_dim)
         self.Wi = ErrorLinearLayer(input_dim * 2, input_dim)
         self.Wc = ErrorLinearLayer(input_dim * 2, input_dim)
