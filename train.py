@@ -25,6 +25,7 @@ def Train(model, dataset, answer, num_epochs):
             metrics.update_state(answer, y_pred)       
         grads = tape.gradient(loss, model.variables)
         optimizer.apply_gradients(grads_and_vars=zip(grads, model.variables))
-        print(f'epoch:{x} loss:{metrics.result().numpy()} accuracy: {Accuracy(answer, y_pred)}')
+        #print(f'epoch:{x} loss:{metrics.result().numpy()} accuracy: {Accuracy(answer, y_pred)}')
+        print(Accuracy(answer, y_pred))
         metrics.reset_states()
     print(f'cost time: {round(time.time() - startTime,3)} sec')
