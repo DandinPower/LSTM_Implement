@@ -5,7 +5,9 @@ import math
 def Accuracy(y, y_pred):
     total_accuracy = 0
     for i in range(len(y)):
-        total_accuracy += abs(y[i][0] - y_pred[i][0]) / y[i][0]
+        different = abs(y[i][0] - y_pred[i][0])
+        accuracy = 1 - (different / y[i][0])
+        total_accuracy += accuracy
     return total_accuracy / len(y)
 
 
