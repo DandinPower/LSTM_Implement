@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np 
 from data import Dataset
 from lstm import LSTM, LinearLayer, QuantLSTM, QuantLinearLayer, SKRMLSTM, ErrorLSTM, ErrorLinearLayer
-from train import Train
+from train import Train, WriteHistory
 from skrm import SKRM
 from dotenv import load_dotenv
 import os
@@ -76,7 +76,8 @@ def Normal():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model = Stock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model, train_data_x, train_data_y, 50)
+    history = Train(model, train_data_x, train_data_y, 5)
+    WriteHistory(history, 'history/original.txt')
 
 def Quant():
     dataset = Dataset(SPLIT_RATE,10)

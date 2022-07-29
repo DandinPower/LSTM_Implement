@@ -18,6 +18,7 @@ def Train(model, dataset, answer, num_epochs):
     metrics = tf.keras.metrics.MeanSquaredError()
     startTime = time.time()
     total = num_epochs
+    history = []
     for x in range(num_epochs):
         with tf.GradientTape() as tape:
             y_pred = model(dataset)
@@ -25,7 +26,13 @@ def Train(model, dataset, answer, num_epochs):
             metrics.update_state(answer, y_pred)       
         grads = tape.gradient(loss, model.variables)
         optimizer.apply_gradients(grads_and_vars=zip(grads, model.variables))
-        #print(f'epoch:{x} loss:{metrics.result().numpy()} accuracy: {Accuracy(answer, y_pred)}')
-        print(Accuracy(answer, y_pred).numpy())
+        print(f'epoch:{x} loss:{metrics.result().numpy()} accuracy: {Accuracy(answer, y_pred)}')
+        history.append(Accuracy(answer, y_pred).numpy())
         metrics.reset_states()
     print(f'cost time: {round(time.time() - startTime,3)} sec')
+    return history
+
+def WriteHistory(_history, _path):
+    with open(_path, 'w') as f:
+        for item in _history:
+            f.write(f'{item}\n')
