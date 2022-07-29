@@ -84,7 +84,7 @@ def Quant():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model2 = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model2, train_data_x, train_data_y, EPOCHS)
+    history = Train(model2, train_data_x, train_data_y, EPOCHS)
     WriteHistory(history, 'history/approximate.txt')
 
 def Skrm():
@@ -99,12 +99,12 @@ def Error():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model4 = ErrorStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model4, train_data_x, train_data_y, EPOCHS)
+    history = Train(model4, train_data_x, train_data_y, EPOCHS)
     WriteHistory(history, 'history/mantissa.txt')
 
 
 if __name__ == "__main__":
-    Normal()
+    #Normal()
     Quant()
     Skrm()
     Error()
