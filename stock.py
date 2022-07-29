@@ -11,6 +11,7 @@ load_dotenv()
 ERROR_RATE = float(os.getenv('ERROR_RATE'))
 FLIP_START = int(os.getenv('FLIP_START'))
 FLIP_END = int(os.getenv('FLIP_END'))
+EPOCHS = int(os.getenv('EPOCHS'))
 
 SPLIT_RATE = 0.9
 INPUT_DIM = 6 
@@ -76,34 +77,36 @@ def Normal():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model = Stock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    history = Train(model, train_data_x, train_data_y, 5)
+    history = Train(model, train_data_x, train_data_y, EPOCHS)
     WriteHistory(history, 'history/original.txt')
 
 def Quant():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
-    model = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model, train_data_x, train_data_y, 50)
+    model2 = QuantStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
+    Train(model2, train_data_x, train_data_y, EPOCHS)
+    WriteHistory(history, 'history/approximate.txt')
 
 def Skrm():
     skrms = SKRM()
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
-    model = SKRMStock(INPUT_DIM, HIDDEN_1, HIDDEN_2, skrms)
-    Train(model, train_data_x, train_data_y, 50)
+    model3 = SKRMStock(INPUT_DIM, HIDDEN_1, HIDDEN_2, skrms)
+    Train(model3, train_data_x, train_data_y, EPOCHS)
     print(skrms.GetCount())
 
 def Error():
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
-    model = ErrorStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
-    Train(model, train_data_x, train_data_y, 50)
+    model4 = ErrorStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
+    Train(model4, train_data_x, train_data_y, EPOCHS)
+    WriteHistory(history, 'history/mantissa.txt')
 
 
 if __name__ == "__main__":
     Normal()
-    #Quant()
-    #Skrm()
-    #Error()
+    Quant()
+    Skrm()
+    Error()
     
     

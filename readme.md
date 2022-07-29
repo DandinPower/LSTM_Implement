@@ -2,5 +2,6 @@
     ```
     ERROR_RATE = 0.25
     FLIP_START = 0
-    FLIP_END = 32
+    FLIP_END = 23
+    EPOCHS = 150
     ```
