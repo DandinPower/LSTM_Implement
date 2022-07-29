@@ -3,12 +3,10 @@ import time
 import math
 
 def Accuracy(y, y_pred):
-    y_total = 0
-    y_pred_total = 0
+    total_accuracy = 0
     for i in range(len(y)):
-        y_total += abs(y[i][0])
-        y_pred_total += abs(y_pred[i][0])
-    return y_pred_total / y_total
+        total_accuracy += abs(y[i][0] - y_pred[i][0]) / y[i][0]
+    return total_accuracy / len(y)
 
 
 def Train(model, dataset, answer, num_epochs):
