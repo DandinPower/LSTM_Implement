@@ -100,13 +100,13 @@ def Error():
     train_data_x, train_data_y = dataset.GetTrainData()
     model4 = ErrorStock(INPUT_DIM, HIDDEN_1, HIDDEN_2)
     history = Train(model4, train_data_x, train_data_y, EPOCHS)
-    WriteHistory(history, 'history/mantissa.txt')
+    WriteHistory(history, 'history/22.txt')
 
 
 if __name__ == "__main__":
     #Normal()
-    Quant()
-    Skrm()
+    #Quant()
+    #Skrm()
     Error()
     
     
