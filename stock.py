@@ -44,7 +44,7 @@ class OperationStock(tf.keras.Model):
         output1 = self.lstm(inputs)
         output2 = self.dense1(output1)
         output3 = self.dense2(output2)
-        self.logger.AddNewLog([output1.shape, output2.shape], "matmul")
+        self.logger.AddNewLog([output1.shape, self.dense1.w], "matmul")
         return output3 
 
 class QuantStock(tf.keras.Model):
