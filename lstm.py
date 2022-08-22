@@ -92,6 +92,10 @@ class OperationCell(tf.keras.Model):
         memory = z * zi
         self.c = self.c * zf + memory
         self.h = zo * tf.keras.activations.tanh(self.c)
+        self.logger.AddNewLog([concat.shape, self.Wc.w.shape], "matmul")
+        self.logger.AddNewLog([concat.shape, self.Wf.w.shape], "matmul")
+        self.logger.AddNewLog([concat.shape, self.Wi.w.shape], "matmul")
+        self.logger.AddNewLog([concat.shape, self.Wo.w.shape], "matmul")
         return self.h
 
 class OperationLSTM(tf.keras.Model):
@@ -102,6 +106,7 @@ class OperationLSTM(tf.keras.Model):
         self.cell = OperationCell(logger, hidden_dim)
 
     def call(self, inputs):
+        self.logger.AddNewLog([inputs.shape, self.linear.w.shape], "matmul")
         inputs = self.linear(inputs)
         for i in range(len(inputs)):
             for data in inputs[i]:
