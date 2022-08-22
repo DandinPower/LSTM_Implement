@@ -34,7 +34,7 @@ class Stock(tf.keras.Model):
 
 class OperationStock(tf.keras.Model):
     def __init__(self, logger, input_dim, hidden_1, hidden_2):
-        super(OperationStockStock, self).__init__()
+        super(OperationStock, self).__init__()
         self.logger = logger
         self.lstm = OperationLSTM(logger, input_dim, hidden_1)
         self.dense1 = LinearLayer(hidden_1, hidden_2)
