@@ -71,6 +71,47 @@ class LSTMCell(tf.keras.Model):
         self.h = zo * tf.keras.activations.tanh(self.c)
         return self.h
 
+class OperationCell(tf.keras.Model):
+    def __init__(self, logger, input_dim):
+        super(OperationCell, self).__init__()
+        self.logger = logger
+        self.c = self.add_variable(name='memory_cell', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.h = self.add_variable(name='last_output', shape=[1, input_dim], initializer="random_normal", trainable = True)
+        self.Wf = LinearLayer(input_dim * 2, input_dim)
+        self.Wi = LinearLayer(input_dim * 2, input_dim)
+        self.Wc = LinearLayer(input_dim * 2, input_dim)
+        self.Wo = LinearLayer(input_dim * 2, input_dim)
+        self.dims = input_dim
+
+    def call(self, inputs):
+        concat = tf.concat([self.h, inputs],1)
+        z = tf.keras.activations.tanh(self.Wc(concat))
+        zf = tf.keras.activations.sigmoid(self.Wf(concat))
+        zi = tf.keras.activations.sigmoid(self.Wi(concat))
+        zo = tf.keras.activations.sigmoid(self.Wo(concat))
+        memory = z * zi
+        self.c = self.c * zf + memory
+        self.h = zo * tf.keras.activations.tanh(self.c)
+        return self.h
+
+class OperationLSTM(tf.keras.Model):
+    def __init__(self, logger, input_dim, hidden_dim):
+        super(OperationLSTM, self).__init__()
+        self.logger = logger
+        self.linear = LinearLayer(input_dim, hidden_dim)
+        self.cell = OperationCell(logger, hidden_dim)
+
+    def call(self, inputs):
+        inputs = self.linear(inputs)
+        for i in range(len(inputs)):
+            for data in inputs[i]:
+                output = self.cell([data])
+            if i == 0:
+                outputs = output
+            else:
+                outputs = tf.concat((outputs, output),0)
+        return outputs
+
 class QuantLSTMCell(tf.keras.Model):
     def __init__(self, input_dim):
         super(QuantLSTMCell, self).__init__()

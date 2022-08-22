@@ -1,8 +1,9 @@
 import tensorflow as tf 
 import numpy as np 
 from data import Dataset
-from lstm import LSTM, LinearLayer, QuantLSTM, QuantLinearLayer, SKRMLSTM, ErrorLSTM, ErrorLinearLayer
-from train import Train, WriteHistory
+from lstm import LSTM, LinearLayer, QuantLSTM, QuantLinearLayer, SKRMLSTM, ErrorLSTM, ErrorLinearLayer, OperationLSTM
+from train import Train, WriteHistory, Train_V2
+from models.logger import FullLogger
 from skrm import SKRM
 from dotenv import load_dotenv
 import os
@@ -22,6 +23,20 @@ class Stock(tf.keras.Model):
     def __init__(self, input_dim, hidden_1, hidden_2):
         super(Stock, self).__init__()
         self.lstm = LSTM(input_dim, hidden_1)
+        self.dense1 = LinearLayer(hidden_1, hidden_2)
+        self.dense2 = LinearLayer(hidden_2, 1)
+
+    def call(self, inputs):
+        output1 = self.lstm(inputs)
+        output2 = self.dense1(output1)
+        output3 = self.dense2(output2)
+        return output3 
+
+class OperationStock(tf.keras.Model):
+    def __init__(self, logger, input_dim, hidden_1, hidden_2):
+        super(OperationStockStock, self).__init__()
+        self.logger = logger
+        self.lstm = OperationLSTM(logger, input_dim, hidden_1)
         self.dense1 = LinearLayer(hidden_1, hidden_2)
         self.dense2 = LinearLayer(hidden_2, 1)
 
@@ -102,11 +117,19 @@ def Error():
     history = Train(model4, train_data_x, train_data_y, EPOCHS)
     WriteHistory(history, 'history/22.txt')
 
+def Operation():
+    fullLogger = FullLogger()
+    dataset = Dataset(SPLIT_RATE,10)
+    train_data_x, train_data_y = dataset.GetTrainData()
+    model = OperationStock(fullLogger, INPUT_DIM, HIDDEN_1, HIDDEN_2)
+    history = Train_V2(fullLogger, model, train_data_x, train_data_y, EPOCHS)
+    fullLogger.WriteLog('operation.txt')
 
 if __name__ == "__main__":
     #Normal()
     #Quant()
     #Skrm()
-    Error()
+    #Error()
+    Operation()
     
     
