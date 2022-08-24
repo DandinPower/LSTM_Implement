@@ -131,8 +131,8 @@ def Operation():
 if __name__ == "__main__":
     #Normal()
     #Quant()
-    #Skrm()
+    Skrm()
     #Error()
-    Operation()
+    #Operation()
     
     
