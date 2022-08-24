@@ -120,6 +120,7 @@ def Error():
     WriteHistory(history, 'history/22.txt')
 
 def Operation():
+    blockSize = [[2, 2], [2, 2]]
     fullLogger = FullLogger()
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()

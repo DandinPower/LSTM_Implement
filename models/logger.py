@@ -1,9 +1,10 @@
 from .factory import CounterFactory
 from .skrmSimulater import SKRM
 class Logger:
-    def __init__(self, _id):
+    def __init__(self, _id, _blockSize):
         self.id = _id
         self.factory = CounterFactory()
+        self.factory.SetBlockSize(_blockSize)
         self.naiveSkrm = SKRM()
         self.skrm = SKRM()
         self.datas = [] #存放多個Counter
@@ -32,12 +33,14 @@ class Logger:
         self.skrm.Show()
   
 class FullLogger:
-    def __init__(self):
+    def __init__(self, _blockSize):
         self.counter = 0
         self.epochs = []
+        self.blockSize = _blockSize
 
     def SetNewEpochs(self):
-        self.epochs.append(Logger(self.counter))
+        logger = Logger(self.counter, self.blockSize)
+        self.epochs.append(logger)
         self.counter += 1
 
     def AddNewLog(self, _tensors, _types):
@@ -62,12 +65,12 @@ class FullLogger:
         with open(_path) as f:
             totalLog = [line.rstrip().split(';') for line in f]
         currentEpoch = int(totalLog[0][0])
-        tempLogger = Logger(currentEpoch)
+        tempLogger = Logger(currentEpoch, self.blockSize)
         for log in totalLog:
             if int(log[0]) != currentEpoch:
                 self.epochs.append(tempLogger)
                 currentEpoch += 1
-                tempLogger = Logger(currentEpoch)
+                tempLogger = Logger(currentEpoch, self.blockSize)
             tempLogger.AddNewLogByMetadata(log)
         self.epochs.append(tempLogger)
 

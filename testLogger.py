@@ -5,7 +5,8 @@ from models.counter import MatmulCounter, TransposeCounter
 
 #測試寫入幾個operation並驗證正確性
 def test1():
-    fullLogger = FullLogger()
+    blockSize = [[2,2], [2,2]]
+    fullLogger = FullLogger(blockSize)
     fullLogger.SetNewEpochs()
     A = tf.zeros([2, 3, 4], tf.int32)
     B = tf.zeros([4, 3], tf.int32)
@@ -25,13 +26,16 @@ def test1():
 
 #測試可不可以正常寫入txt檔
 def test2():
-    fullLogger = FullLogger()
+    blockSize = [[2,2], [2,2]]
+    fullLogger = FullLogger(blockSize)
     fullLogger.ReadLog('operation.txt')
     fullLogger.ShowLog()
 
 #測試可不可以正確計算出float的數量
 def test3():
+    blockSize = [[2,2], [2,2]]
     matmul = MatmulCounter(0)
+    matmul.SetBlockSize(blockSize)
     matmul.SetLog([[2, 3, 4], [4, 5]])
     print(matmul.floatNumsInTensors)
 
@@ -62,14 +66,23 @@ def test7():
     matmul.SetLog([[1,20], [20, 5]])
     print(matmul.GetSkrmImproveRecord())
 
+#測試計算lstm的結果
+def test8():
+    blockSize = [[2, 2], [2, 2]]
+    fullLogger = FullLogger(blockSize)
+    fullLogger.ReadLog('operation.txt')
+    fullLogger.ShowNaiveResult(0)
+    fullLogger.ShowImproveResult(0)
+
 def test():
-    #test1()
-    #test2()
-    #test3()
-    #test4()
-    #test5()
+    test1()
+    test2()
+    test3()
+    test4()
+    test5()
     test6()
     test7()
+    test8()
     
 if __name__ == "__main__":
     test()

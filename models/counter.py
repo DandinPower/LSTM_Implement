@@ -100,7 +100,7 @@ class MatmulCounter(Counter):
         shifts = 0
         detects = 0
         shifts += 2 * self.J * self.N * self.floatNumsInTensors[0]
-        shifts += self.I * self.N * self.floatNumsInTensors[1]
+        shifts += 2 * self.I * self.N * self.floatNumsInTensors[1]
         detects += self.J * self.N * self.floatNumsInTensors[0]
         detects += self.I * self.N * self.floatNumsInTensors[1]
         return [shifts, detects, 0, 0]
