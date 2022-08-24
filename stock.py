@@ -121,7 +121,7 @@ def Error():
 
 def Operation():
     blockSize = [[2, 2], [2, 2]]
-    fullLogger = FullLogger()
+    fullLogger = FullLogger(blockSize)
     dataset = Dataset(SPLIT_RATE,10)
     train_data_x, train_data_y = dataset.GetTrainData()
     model = OperationStock(fullLogger, INPUT_DIM, HIDDEN_1, HIDDEN_2)
